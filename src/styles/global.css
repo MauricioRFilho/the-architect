@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-[#050505] text-zinc-100;
+  }
+}
+
+/* Base animations that don't depend on Framer Motion */
+::selection {
+  background-color: #fff;
+  color: #000;
+}
