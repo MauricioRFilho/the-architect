@@ -4,12 +4,13 @@ interface Props {
     title: string;
     category: string;
     description: string;
+    link?: string;
 }
 
-const { id, title, category, description } = Astro.props;
+const { id, title, category, description, link } = Astro.props;
 ---
 
-<div class="group relative py-16 md:py-24 px-4 hover:bg-white transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] cursor-pointer overflow-hidden border-b border-zinc-900/50">
+<a href={link || "#"} target={link ? "_blank" : "_self"} rel={link ? "noopener noreferrer" : ""} class="group relative block py-16 md:py-24 px-4 hover:bg-white transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] cursor-pointer overflow-hidden border-b border-zinc-900/50">
     <!-- Animated background Reveal -->
     <div class="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]"></div>
 
@@ -39,5 +40,5 @@ const { id, title, category, description } = Astro.props;
                 </svg>
             </div>
         </div>
-    </div>
+    </a>
 </div>
