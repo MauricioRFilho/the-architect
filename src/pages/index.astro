@@ -1,3 +1,4 @@
+import SpeedInsights from '@vercel/speed-insights/astro';
 ---
 import Navbar from "../components/Navbar.astro";
 import Hero from "../components/Hero.astro";
@@ -87,6 +88,6 @@ import "../styles/global.css";
 			.animate-fade-in {
 				animation: fadeIn 2s ease-out forwards;
 			}
-		</style>
+		<SpeedInsights />
 	</body>
 </html>
