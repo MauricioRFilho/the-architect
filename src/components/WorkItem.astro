@@ -5,6 +5,7 @@ interface Props {
     category: string;
     description: string;
     link?: string;
+    stacks?: string[];
     metrics?: {
         performance: number;
         accessibility: number;
@@ -13,12 +14,29 @@ interface Props {
     };
 }
 
-const { id, title, category, description, link, metrics } = Astro.props;
+const { id, title, category, description, link, metrics, stacks } = Astro.props;
 
 const getStatusColor = (score: number) => {
     if (score >= 90) return "text-emerald-500";
     if (score >= 80) return "text-amber-500";
     return "text-red-500";
+};
+
+const stackLabels: Record<string, string> = {
+    react: "React",
+    nextjs: "Next.js",
+    astro: "Astro",
+    typescript: "TypeScript",
+    tailwind: "Tailwind CSS",
+    css: "CSS",
+    vercel: "Vercel",
+    nodejs: "Node.js",
+    prisma: "Prisma",
+    supabase: "Supabase",
+    firebase: "Firebase",
+    dotnet: ".NET",
+    postgres: "PostgreSQL",
+    redis: "Redis",
 };
 ---
 
@@ -80,7 +98,51 @@ const getStatusColor = (score: number) => {
             )}
         </div>
 
-        <div class="flex justify-end lg:pr-4">
+        <div class="flex items-center gap-3 lg:pr-4">
+            {stacks && stacks.length > 0 && (
+                <div class="stack-trigger relative" data-stack-id={id}>
+                    <button
+                        type="button"
+                        class="stack-btn w-10 h-10 rounded-full border border-zinc-800 group-hover:border-zinc-300 flex items-center justify-center transition-all duration-500 hover:scale-110 relative z-20"
+                        aria-label="Ver tecnologias"
+                        onclick="event.preventDefault(); event.stopPropagation(); this.closest('.stack-trigger').classList.toggle('is-open');"
+                    >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="stroke-zinc-400 group-hover:stroke-zinc-600 transition-colors" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
+                            <path d="M2 17L12 22L22 17"/>
+                            <path d="M2 12L12 17L22 12"/>
+                        </svg>
+                    </button>
+
+                    <!-- Tooltip Popup -->
+                    <div class="stack-tooltip absolute right-0 bottom-full mb-3 z-30 pointer-events-none opacity-0 translate-y-2 transition-all duration-300">
+                        <div class="bg-zinc-900 border border-zinc-700/50 rounded-xl px-4 py-3 shadow-2xl shadow-black/40 backdrop-blur-sm min-w-max">
+                            <span class="block text-[8px] uppercase tracking-[0.4em] text-zinc-500 font-mono mb-2.5">Tech Stack</span>
+                            <div class="flex items-center gap-3">
+                                {stacks.map((stack) => (
+                                    <div class="flex flex-col items-center gap-1.5 group/icon">
+                                        <div class="w-8 h-8 rounded-lg bg-zinc-800/60 border border-zinc-700/30 flex items-center justify-center transition-all duration-200 hover:border-zinc-500 hover:bg-zinc-800">
+                                            <img
+                                                src={`https://cdn.simpleicons.org/${stack === 'nextjs' ? 'nextdotjs' : stack === 'tailwind' ? 'tailwindcss' : stack === 'nodejs' ? 'nodedotjs' : stack === 'postgres' ? 'postgresql' : stack === 'dotnet' ? 'dotnet' : stack}/white`}
+                                                alt={stackLabels[stack] || stack}
+                                                width="16"
+                                                height="16"
+                                                loading="lazy"
+                                                class="opacity-70 hover:opacity-100 transition-opacity"
+                                            />
+                                        </div>
+                                        <span class="text-[7px] uppercase tracking-wider text-zinc-500 font-mono">{stackLabels[stack] || stack}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <!-- Arrow -->
+                            <div class="absolute -bottom-1.5 right-4 w-3 h-3 bg-zinc-900 border-r border-b border-zinc-700/50 rotate-45"></div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div class="w-12 h-12 rounded-full border border-zinc-800 group-hover:border-zinc-200 flex items-center justify-center -rotate-45 group-hover:rotate-0 transition-all duration-700">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="stroke-white group-hover:stroke-black transition-colors">
                     <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -89,3 +151,27 @@ const getStatusColor = (score: number) => {
         </div>
     </div>
 </a>
+
+<style>
+    .stack-trigger.is-open .stack-tooltip {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+    .stack-trigger.is-open .stack-btn {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+</style>
+
+<script>
+    // Fechar tooltip ao clicar fora
+    document.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        if (!target.closest('.stack-trigger')) {
+            document.querySelectorAll('.stack-trigger.is-open').forEach((el) => {
+                el.classList.remove('is-open');
+            });
+        }
+    });
+</script>
